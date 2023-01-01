@@ -7,6 +7,8 @@ class BooksSpider(scrapy.Spider):
     start_urls = ['http://books.toscrape.com/']
 
     custom_settings = {
+        'CONCURRENT_REQUESTS': 10,
+        'DOWNLOAD_DELAY': 0.1,
         'FEED_URI': f'output/books_{datetime.datetime.today().strftime("%Y-%m-%d")}.csv',
         'FEED_FORMAT': 'csv',
         'FEED_EXPORTERS': {'csv': 'scrapy.exporters.CsvItemExporter'},
