@@ -7,13 +7,13 @@ class BooksSpider(scrapy.Spider):
     start_urls = ['http://books.toscrape.com/']
 
     custom_settings = {
-        'CONCURRENT_REQUESTS': 10,
+        'CONCURRENT_REQUESTS': 50,
         'DOWNLOAD_DELAY': 0.1,
-        'FEED_URI': f'output/books_{datetime.datetime.today().strftime("%Y-%m-%d")}.csv',
+        'FEED_URI': f'output/books_{datetime.datetime.today().strftime("%Y-%m-%d %H-%M-%S")}.csv',
         'FEED_FORMAT': 'csv',
         'FEED_EXPORTERS': {'csv': 'scrapy.exporters.CsvItemExporter'},
         'FEED_EXPORT_ENCODING': 'utf-8',
-        'FEED_EXPORT_FIELDS': ('product_type','title','price_excl_tax',\
+        'FEED_EXPORT_FIELDS': ('product_type','title','cover_image_url','price_excl_tax',\
                                 'price_incl_tax','tax','rating','availability',\
                                 'description','upc','reviews') 
     }
@@ -30,6 +30,7 @@ class BooksSpider(scrapy.Spider):
         yield {
             'product_type': response.xpath("//table[@class='table table-striped']/tr[th/text()='Product Type']/td/text()").get(),
             'title': response.xpath("//div[@class='col-sm-6 product_main']/h1/text()").get(),
+            'cover_image_url': 'http://books.toscrape.com/' + response.xpath("//img/@src").get()[6:],
             'price_excl_tax': response.xpath("//table[@class='table table-striped']/tr[th/text()='Price (excl. tax)']/td/text()").get(),
             'price_incl_tax': response.xpath("//table[@class='table table-striped']/tr[th/text()='Price (incl. tax)']/td/text()").get(),
             'tax': response.xpath("//table[@class='table table-striped']/tr[th/text()='Tax']/td/text()").get(),
